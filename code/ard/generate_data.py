@@ -6,7 +6,9 @@ column_name = ["m", "a条数", "r条数", "d条数", "A值", "r值", "d值", "�
 dr_choice = [[True, False], [False, True]]
 
 def get_file_name(use_r, use_d, attack_count):
-    filename = os.path.abspath(__file__) + "/ard"
+    filepath = os.path.abspath(__file__)
+    filepath = filepath[0:filepath.rfind("/")]
+    filename = filepath + "/ard"
     if use_r:
         filename += "_use_r"
     elif use_d:
