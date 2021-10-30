@@ -1,11 +1,12 @@
 from direct_solve import direct_solve
 import pandas as pd
+import os
 
 column_name = ["m", "a条数", "r条数", "d条数", "A值", "r值", "d值", "期望伤害", "是否固定r", "是否固定d"]
 dr_choice = [[True, False], [False, True]]
 
 def get_file_name(use_r, use_d, attack_count):
-    filename = "ard"
+    filename = os.path.abspath(__file__) + "/ard"
     if use_r:
         filename += "_use_r"
     elif use_d:
