@@ -13,9 +13,9 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
                     (NA, attck_count),(ca, 0.04975), (cr, 0.033), (cd, 0.066),  \
                     (CA, 0.466), (ba, yourBasicAttack), (m, gom), (ya, 311)]
     if fix_d:
-        constants.append((nd, 5 if use_d else 4))
+        constants.append((nd, 4 if use_d else 5))
     elif fix_r:
-        constants.append((nr, 5 if use_r else 4))
+        constants.append((nr, 4 if use_r else 5))
 
     if toDoLog:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
@@ -65,7 +65,7 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
             pprint(res)
         value_na = res[na]
         value_nr = res[nr]
-        value_nd = 5 if use_d else 4
+        value_nd = 4 if use_d else 5
     elif fix_r:
         if toDoLog:
             print("固定nr, 求解以下方程")
@@ -76,7 +76,7 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
         if toDoLog:
             pprint(res)
         value_na = res[na]
-        value_nr = 5 if use_r else 4
+        value_nr = 4 if use_r else 5
         value_nd = res[nd]
     else:
         if toDoLog:
@@ -116,10 +116,10 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
         if not S.Reals.contains(value_nr):
             print("复数解，完蛋啦！")
             return [value_na, value_nr, value_nd, value_A, value_r, value_d, E, False, False]
-        elif value_nr < (5 if use_r else 4):
+        elif value_nr < (4 if use_r else 5):
             print("nr 小于 最小值啦，后面开始固定 nr")
             return direct_solve(gom, yourBasicAttack, use_r, use_d, attck_count, fix_r = True, fix_d= False, toDoLog = False)
-        elif value_nd < (5 if use_r else 4):
+        elif value_nd < (4 if use_d else 5):
             print("nd 小于 最小值啦，后面开始固定 nr")
             return direct_solve(gom, yourBasicAttack, use_r, use_d, attck_count, fix_r = False, fix_d= True, toDoLog = False)
         else:
