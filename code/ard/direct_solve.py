@@ -5,18 +5,26 @@ def getOnlySolution(setForm):
 
 ba,na,m,nr,br,nd,bd,ca,cr,cd, xr, NA, CA, ya = symbols("ba, na, m, nr, br, nd, bd, ca, cr, cd, xr, NA, CA, ya")
 
+init_data = {
+    "br": 0.05, # 除开主词条和副词条之外的暴击率，包括初始的5%， 套装加成, 武器加成，深渊BUFF，角色升级带去的，等等等等一切你想模拟的情况
+    "bd": 0.5, # 除开主词条和副词条之外的暴击率，包括初始的50%， 套装加成，武器加成，各种BUFF，角色升级带去的，等等等等一切你想模拟的情况
+    "ya": 311 # 非基础攻击力中，除开圣遗物大攻击(主副)加成，剩下的攻击力，包含羽毛主词条，套装加成，武器加成，甚至说是各种拐，班尼特，九条，各种各种，等等你想模拟的情况
+}
+
 # use_r 代表使用暴击帽
 # use_d 代表使用爆伤帽
 # attack_count 代表杯和时计使用了几个主词条大攻击
 def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attck_count = 0, fix_r =False, fix_d = False, toDoLog = True,):
-    constants = [(br, 0.05 + 0.33 if use_r else 0), (bd, 0.5 + 0.66 if use_d else 0),\
+    global init_data
+    constants = [(br, init_data["br"] + 0.33 if use_r else 0), (bd, init_data["bd"] + 0.66 if use_d else 0),\
                     (NA, attck_count),(ca, 0.04975), (cr, 0.033), (cd, 0.066),  \
-                    (CA, 0.466), (ba, yourBasicAttack), (m, gom), (ya, 311)]
+                    (CA, 0.466), (ba, yourBasicAttack), (m, gom), (ya, init_data["ya"])]
     if fix_d:
         constants.append((nd, 4 if use_d else 5))
     elif fix_r:
         constants.append((nr, 4 if use_r else 5))
 
+    # 写出总攻击力，总爆率， 总爆伤的表达式
     if toDoLog:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     expr_A = (ba*(1+NA*CA+na*ca) + ya)
@@ -37,6 +45,7 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
         print("总爆伤")
         pprint(expr_d)
 
+    # 写出方程组，联立Lnd和Lnr的式子已经化简/排除了2组解
     if toDoLog:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     
@@ -51,6 +60,7 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
     expr_23_after_sub = expr_23.subs(constants)
     expr_4_after_sub = expr_4.subs(constants)
 
+    # 根据现在是什么模式，fix_r？fix_d？ 挑选方程组求解
     if toDoLog:
         print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
@@ -91,6 +101,7 @@ def direct_solve(gom, yourBasicAttack = 1000, use_r = False, use_d = False, attc
         value_nr = res[0][1]
         value_nd = res[0][2]
 
+    # 根据模式，由解获得最终输出，或者根据解的情况，决定r或者d，进行再一次求解
     print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     if fix_r:
         value_A = expr_A.subs([(na, value_na), (nd, value_nd)])
